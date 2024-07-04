@@ -1,4 +1,4 @@
-# CINEMACORDN
+# CINEMACORN
 
 ## What is this?
 
