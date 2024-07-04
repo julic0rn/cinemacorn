@@ -25,16 +25,15 @@ jobs:
           
       - name: execute py script # run main.py
         run: python main.py
-      
-      - name: commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "updated cinema schedules" --allow-empty)
-          
-      - name: push changes
-        uses: ad-m/github-push-action@v0.8.0
+    
+      - name: get current time and day
+        id: t1
+        uses: Kaven-Universe/github-action-current-date-time@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main 
+          format: "yyyy-MM-dd"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.t1.outputs.year }}-${{ steps.t1.outputs.month }}-${{ steps.t1.outputs.day }}
+          body_path: schedule.md

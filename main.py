@@ -5,6 +5,8 @@ import requests
 from bs4 import BeautifulSoup
 from mdutils import MdUtils
 
+MARKDON_FILE_PATH = "schedule.md"
+
 BASE_URL = "https://kinotickets.express"
 CINEMA_PATHS = [
     "/ingolstadt-cinema1",
@@ -53,7 +55,9 @@ def create_markdown(cinemas: List[Cinema]):
         cinemas (List[Cinema]): _description_
     """
 
-    md_file = MdUtils(file_name="README", title="Cinemacorn - " + str(datetime.now(UTC)))
+    md_file = MdUtils(
+        file_name=MARKDON_FILE_PATH, title="Cinemacorn - " + str(datetime.now(UTC))
+    )
 
     for cinema in cinemas:
         print(cinema.url)
