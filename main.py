@@ -1,8 +1,9 @@
 from typing import List
-from datetime import datetime
+from datetime import datetime, UTC
 import dataclasses
 import requests
 from bs4 import BeautifulSoup
+from mdutils import MdUtils
 
 BASE_URL = "https://kinotickets.express"
 CINEMA_PATHS = [
@@ -16,7 +17,8 @@ CINEMA_PATHS = [
 class ScheduleItem:
     """Represents a date and times when a movie is shown"""
 
-    datetimes: List[datetime]
+    datetime: datetime
+    url_path: str
 
 
 @dataclasses.dataclass
@@ -32,16 +34,49 @@ class Cinema:
     """Represents a cinema with its movie schedule"""
 
     url: str
+    name: str
     movies: List[Movie]
 
 
 def main():
     """main lol"""
+    cinemas: List[Cinema] = []
     for cinema in CINEMA_PATHS:
-        parse_cinema(BASE_URL + cinema)
+        cinemas.append(parse_cinema(BASE_URL + cinema))
+    create_markdown(cinemas=cinemas)
 
 
-def parse_cinema(url: str):
+def create_markdown(cinemas: List[Cinema]):
+    """Creates a markdown file to show the cinemas and its schedules
+
+    Args:
+        cinemas (List[Cinema]): _description_
+    """
+
+    md_file = MdUtils(file_name="README", title="Cinemacorn - " + str(datetime.now(UTC)))
+
+    for cinema in cinemas:
+        print(cinema.url)
+        md_file.new_header(1, md_file.new_inline_link(link=cinema.url, text=cinema.name))
+
+        for movie in cinema.movies:
+            print(movie.title)
+            md_file.new_header(2, movie.title)
+            for item in movie.schedule:
+                print(item.datetime)
+                formatted_date = item.datetime.strftime("%A") + " " + str(item.datetime)
+                md_file.new_line(
+                    md_file.new_inline_link(
+                        link=BASE_URL + item.url_path, text=formatted_date
+                    )
+                )
+                print()
+                md_file.new_line()
+        print()
+    md_file.create_md_file()
+
+
+def parse_cinema(url: str) -> Cinema:
     """For given url of a cinema get all movies and its schedules
 
     Args:
@@ -51,15 +86,19 @@ def parse_cinema(url: str):
     soup = BeautifulSoup(response.text, "html.parser")
     plan = extract_plan(soup)
     only_ov_plan = filter_only_ov(plan)
-    cinema = Cinema(url, map_to_movies(only_ov_plan))
-    print(cinema.url)
-    for movie in cinema.movies:
-        print(movie.title)
-        for item in movie.schedule:
-            for date in item.datetimes:
-                print(date)
-            print()
-    print()
+    cinema_name = extract_cinema_name(soup)
+    return Cinema(url, cinema_name, map_to_movies(only_ov_plan))
+
+def extract_cinema_name(cinema_template) -> str:
+    """Extracts the name of the cinema
+
+    Args:
+        cinema_template (_type_): template
+
+    Returns:
+        str: name of the cinema
+    """
+    return cinema_template.find_all("div", attrs={"class": "truncate"})[0].text
 
 
 def extract_plan(cinema_template):
@@ -87,7 +126,7 @@ def get_title(movie_element) -> str:
         movie_element (_type_): _description_
 
     Returns:
-        str: _description_
+        str: title
     """
     return movie_element.select_one("ul li div").text
 
@@ -138,12 +177,14 @@ def map_to_movies(plan) -> List[Movie]:
             date = time.select("li div div")[1]
             date_string = split_and_join(date.text) + str(datetime.today().year)
             times_of_play = time.select("li div a")
-            date_times: List[datetime] = []
             for play in times_of_play:
                 time_of_play = play.text.strip()
-                date_times.append(parse_date_from_str(date_string + " " + time_of_play))
-            schedule_item = ScheduleItem(date_times)
-            schedule_items.append(schedule_item)
+                href = play['href']
+                schedule_item = ScheduleItem(
+                    datetime=parse_date_from_str(date_string + " " + time_of_play),
+                    url_path=href
+                )
+                schedule_items.append(schedule_item)
         movie = Movie(title, schedule_items)
         movies.append(movie)
     return movies
