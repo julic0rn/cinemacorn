@@ -1,3 +1,5 @@
+from typing import List
+import dataclasses
 import requests
 from bs4 import BeautifulSoup
 
@@ -8,66 +10,129 @@ CINEMA_PATHS = [
     "/ingolstadt_donau-flimmern",
 ]
 
+
+@dataclasses.dataclass
 class ScheduleItem:
-    def __init__(self, date, times):
-        self.date = date
-        self.times = times
+    """Represents a date and times when a movie is shown"""
 
+    date: str
+    times: List[str]
+
+
+@dataclasses.dataclass
 class Schedule:
-    def __init__(self, schedule_item):
-        self.schedule_item = schedule_item
+    """Represents e.g. a week of dates and times when a movie is shown"""
 
+    schedule_items: List[ScheduleItem]
+
+
+@dataclasses.dataclass
 class Movie:
-    def __init__(self, title, schedule):
-        self.title = title
-        self.schedule = schedule
+    """Represents a movie and its schedule"""
+
+    title: str
+    schedule: Schedule
+
 
 def main():
+    """main lol"""
     for cinema in CINEMA_PATHS:
         parse_cinema(BASE_URL + cinema)
 
-def parse_cinema(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
+
+def parse_cinema(url: str):
+    """For given url of a cinema get all movies and its schedules
+
+    Args:
+        url (str): The url of the cinema to parse
+    """
+    response = requests.get(url, timeout=10)
+    soup = BeautifulSoup(response.text, "html.parser")
     print("Parsing: ", url)
     plan = extract_plan(soup)
     only_ov_plan = filter_only_ov(plan)
     movies = print_date_and_time(only_ov_plan)
-    # print(len(movies))
+    print("Parses movies count: ", len(movies))
 
 
 def extract_plan(cinema_template):
-    movie_posters = cinema_template.find_all('img', attrs={'alt': 'movie poster'})
-    plan = list()
+    """Extracts the overall plan with all movies and its schedule as a template
+    from the root template of the cinema
+
+    Args:
+        cinema_template (BeautifulSoup): template of the cinema site
+
+    Returns:
+        BeautifulSoup: template of only the plan
+    """
+    movie_posters = cinema_template.find_all("img", attrs={"alt": "movie poster"})
+    plan = []
     for movie_poster in movie_posters:
         movie_element = movie_poster.parent.parent
         plan.append(movie_element)
     return plan
 
-def get_title(movie_element):
-    return movie_element.select_one('ul li div').text
 
-def is_ov(title):
+def get_title(movie_element) -> str:
+    """Extracts the movies title
+
+    Args:
+        movie_element (_type_): _description_
+
+    Returns:
+        str: _description_
+    """
+    return movie_element.select_one("ul li div").text
+
+
+def is_ov(title) -> bool:
+    """Returns whether the title is OV or OmU
+
+    Args:
+        title (str): title
+
+    Returns:
+        boolean: is OV or OmU
+    """
     if "OmU" in title or "OV" in title:
         return True
-    else:
-        return False
+    return False
+
 
 def filter_only_ov(schedule):
-    return [movie_element for movie_element in schedule if is_ov(get_title(movie_element))]
+    """Filters given schedule to return only movies in OV
 
-def print_date_and_time(plan):
-    movies = list()
+    Args:
+        schedule (_type_): template of the schedule
+
+    Returns:
+        _type_: template of the filtered schedule with only OV movies
+    """
+    return [
+        movie_element for movie_element in schedule if is_ov(get_title(movie_element))
+    ]
+
+
+def print_date_and_time(plan) -> List[Movie]:
+    """Maps the given plan template into a list of movies
+
+    Args:
+        plan (_type_): template of the plan
+
+    Returns:
+        List[Movie]: Mapped movie list
+    """
+    movies: List[Movie] = []
     for movie_element in plan:
         title = get_title(movie_element)
         print(title)
-        times = movie_element.select('ul li')
-        schedule_items = list()
+        times = movie_element.select("ul li")
+        schedule_items: List[ScheduleItem] = []
         for time in times:
-            date = time.select_one('li div')
+            date = time.select_one("li div")
             print("date: ", split_and_join(date.text))
-            times_of_play = time.select('li div a')
-            times_for_date = list()
+            times_of_play = time.select("li div a")
+            times_for_date: List[str] = []
             for play in times_of_play:
                 time_of_play = play.text.strip()
                 times_for_date.append(time_of_play)
@@ -78,9 +143,18 @@ def print_date_and_time(plan):
         movie = Movie(title, schedule)
         movies.append(movie)
     return movies
-    
+
 
 def split_and_join(input):
+    """splits a string with a lot of white space in it and joins them with a single whitespace
+
+    Args:
+        input (str): Input string
+
+    Returns:
+        str: _description_
+    """
     return " ".join(input.split())
+
 
 main()
