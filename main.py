@@ -1,4 +1,5 @@
 from typing import List
+from datetime import datetime
 import dataclasses
 import requests
 from bs4 import BeautifulSoup
@@ -15,15 +16,7 @@ CINEMA_PATHS = [
 class ScheduleItem:
     """Represents a date and times when a movie is shown"""
 
-    date: str
-    times: List[str]
-
-
-@dataclasses.dataclass
-class Schedule:
-    """Represents e.g. a week of dates and times when a movie is shown"""
-
-    schedule_items: List[ScheduleItem]
+    datetimes: List[datetime]
 
 
 @dataclasses.dataclass
@@ -31,7 +24,15 @@ class Movie:
     """Represents a movie and its schedule"""
 
     title: str
-    schedule: Schedule
+    schedule: List[ScheduleItem]
+
+
+@dataclasses.dataclass
+class Cinema:
+    """Represents a cinema with its movie schedule"""
+
+    url: str
+    movies: List[Movie]
 
 
 def main():
@@ -48,11 +49,17 @@ def parse_cinema(url: str):
     """
     response = requests.get(url, timeout=10)
     soup = BeautifulSoup(response.text, "html.parser")
-    print("Parsing: ", url)
     plan = extract_plan(soup)
     only_ov_plan = filter_only_ov(plan)
-    movies = print_date_and_time(only_ov_plan)
-    print("Parses movies count: ", len(movies))
+    cinema = Cinema(url, map_to_movies(only_ov_plan))
+    print(cinema.url)
+    for movie in cinema.movies:
+        print(movie.title)
+        for item in movie.schedule:
+            for date in item.datetimes:
+                print(date)
+            print()
+    print()
 
 
 def extract_plan(cinema_template):
@@ -113,7 +120,7 @@ def filter_only_ov(schedule):
     ]
 
 
-def print_date_and_time(plan) -> List[Movie]:
+def map_to_movies(plan) -> List[Movie]:
     """Maps the given plan template into a list of movies
 
     Args:
@@ -125,27 +132,36 @@ def print_date_and_time(plan) -> List[Movie]:
     movies: List[Movie] = []
     for movie_element in plan:
         title = get_title(movie_element)
-        print(title)
         times = movie_element.select("ul li")
         schedule_items: List[ScheduleItem] = []
         for time in times:
-            date = time.select_one("li div")
-            print("date: ", split_and_join(date.text))
+            date = time.select("li div div")[1]
+            date_string = split_and_join(date.text) + str(datetime.today().year)
             times_of_play = time.select("li div a")
-            times_for_date: List[str] = []
+            date_times: List[datetime] = []
             for play in times_of_play:
                 time_of_play = play.text.strip()
-                times_for_date.append(time_of_play)
-                print("time: ", time_of_play)
-            schedule_item = ScheduleItem(date, times_for_date)
+                date_times.append(parse_date_from_str(date_string + " " + time_of_play))
+            schedule_item = ScheduleItem(date_times)
             schedule_items.append(schedule_item)
-        schedule = Schedule(schedule_items)
-        movie = Movie(title, schedule)
+        movie = Movie(title, schedule_items)
         movies.append(movie)
     return movies
 
 
-def split_and_join(input):
+def parse_date_from_str(datetime_str: str) -> datetime:
+    """Parses the horrible date from the movies into a datetime object
+
+    Args:
+        datetime_str (str): a date string like "08.07." or "07.07."
+
+    Returns:
+        datetime: a datetime object
+    """
+    return datetime.strptime(datetime_str, "%d.%m.%Y %H:%M")
+
+
+def split_and_join(input) -> str:
     """splits a string with a lot of white space in it and joins them with a single whitespace
 
     Args:
