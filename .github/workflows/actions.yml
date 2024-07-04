@@ -3,7 +3,7 @@ name: run main.py
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *' # Everyday at 7 am
+    - cron: '0 7 * * *' # Everyday at 7:00 am UTC
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
           git diff-index --quiet HEAD || (git commit -a -m "updated cinema schedules" --allow-empty)
           
       - name: push changes
-        uses: ad-m/github-push-action@v0.6.0
+        uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: main 
