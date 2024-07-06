@@ -1,5 +1,8 @@
+import { Cinema } from './models/cinema.ts';
 import CinemaParser from './utils/cinema_parser.ts';
+import FileWriter from './utils/file_writer.ts';
 import { HtmlParser } from './utils/html_parser.ts';
+import MarkdownBuilder from './utils/markdown_builder.ts';
 import WebLoader from './utils/web_loader.ts';
 
 export const GLOBALS = {
@@ -20,8 +23,12 @@ export function main(): void {
       return CinemaParser.parseCinema(document, url);
     },
   );
-  cinemaPromises.forEach((promise) =>
-    promise.then((cinema) => console.log(cinema))
+
+  Promise.all(cinemaPromises).then(
+    (cinemas: Cinema[]) => {
+      const markdown: string = MarkdownBuilder.cinemasMarkdown(cinemas);
+      FileWriter.writeToFile(GLOBALS.markdownFilePath, markdown);
+    },
   );
 }
 
