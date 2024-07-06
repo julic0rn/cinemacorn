@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: read # Needed to clone the repository
+      contents: write # Needed to clone the repository and create new releases
 
     steps:
       - name: Clone repository
