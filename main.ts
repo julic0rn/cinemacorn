@@ -28,6 +28,7 @@ export function main(): void {
   Promise.all(cinemaPromises).then(
     (cinemas: Cinema[]) => {
       const markdown: string = MarkdownBuilder.cinemasMarkdown(cinemas);
+      console.log(markdown);
       FileWriter.writeToFile(GLOBALS.markdownFilePath, markdown);
     },
   );
