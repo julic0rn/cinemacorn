@@ -1,4 +1,4 @@
-name: run main.py
+name: run deno script
 
 on:
   workflow_dispatch:
@@ -8,23 +8,27 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read # Needed to clone the repository
+
     steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
 
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner
-
-      - name: setup python
-        uses: actions/setup-python@v4
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
         with:
-          python-version: '3.12' # install the python version needed
-          
-      - name: install python packages
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          
-      - name: execute py script # run main.py
-        run: python main.py
+          deno-version: v1.44
+
+      - name: Build step
+        run: "deno task build"
+
+      - name: Build excecutable
+        run: "deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn"
+
+      - name: execute deno 
+        run: ./cinemacorn
     
       - name: get current time and day
         id: t1
