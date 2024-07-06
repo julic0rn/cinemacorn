@@ -1,4 +1,5 @@
 import { format } from '../deps.ts';
+import { GLOBALS } from '../main.ts';
 import { Cinema } from '../models/cinema.ts';
 import { Movie } from '../models/movie.ts';
 import { ScheduleItem } from '../models/schedule_item.ts';
@@ -20,19 +21,20 @@ export default class MarkdownBuilder {
     }
 
     public static cinemasMarkdown(cinemas: Cinema[]): string {
+        const currentDateString = format(
+            new Date(),
+            'yyyy-mm-dd HH:mm',
+        );
         const header = this.heading(
             1,
-            format(
-                new Date(),
-                'yyyy-mm-dd HH:mm',
-            ),
+            `${GLOBALS.projectName}: ${currentDateString}`,
         );
 
         const cinemasMarkdown: string = cinemas.map((cinema) =>
             this.convertCinemaToMarkdown(cinema)
         ).join('\n');
 
-        return header.concat('\n', cinemasMarkdown);
+        return header.concat('\n', '\n', cinemasMarkdown);
     }
 
     private static convertCinemaToMarkdown(cinema: Cinema): string {
