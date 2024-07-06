@@ -8,12 +8,16 @@ Find the nicely formatted list [here](https://github.com/julic0rn/cinemacorn/rel
 
 ## Requirements
 
-- [Python virtual environment](https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/)
+- [Deno](https://docs.deno.com/runtime/manual/getting_started/installation/)
 
-## Run locally
-
-### Install dependencies
+### Run project
 
 ```sh
-pip install -r requirements.txt
+deno run --allow-read --allow-write --allow-net main.ts
+```
+
+### Build executable binary
+
+```sh
+deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn
 ```
