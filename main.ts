@@ -6,6 +6,7 @@ import MarkdownBuilder from './utils/markdown_builder.ts';
 import WebLoader from './utils/web_loader.ts';
 
 export const GLOBALS = {
+  projectName: 'CinemaCorn',
   markdownFilePath: 'schedule.md',
   baseUrl: 'https://kinotickets.express',
   subPaths: [

@@ -93,7 +93,13 @@ export default class CinemaParser {
                         ).split(':').map((e) => Number(e));
                         const subPath = timeElement.getAttribute('href') ?? '';
 
-                        const date = new Date(year, month, day, hour, minutes);
+                        const date = new Date(
+                            year!,
+                            month!,
+                            day,
+                            hour,
+                            minutes,
+                        );
                         const scheduleItem: ScheduleItem = {
                             datetime: date,
                             urlPath: subPath,
@@ -114,7 +120,7 @@ export default class CinemaParser {
     private static extractDate(scheduleElement: Element): string {
         const dateHeaderElement =
             scheduleElement.getElementsByTagName('div')[0];
-        const dateElement = dateHeaderElement.getElementsByTagName('div')[1];
+        const dateElement = dateHeaderElement?.getElementsByTagName('div')[1];
         return this.returnTextOrError(dateElement, 'dateElement');
     }
 
@@ -144,7 +150,7 @@ export default class CinemaParser {
      * @returns The text content of given element if defined
      */
     private static returnTextOrError(
-        element: Element | null,
+        element: Element | undefined | null,
         source: string,
     ): string {
         if (element) {
