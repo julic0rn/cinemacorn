@@ -46,7 +46,7 @@ export default class MarkdownBuilder {
                 const schedule = movie.schedule.map(
                     (scheduleItem: ScheduleItem) =>
                         '\n'.concat(this.link(
-                            cinema.url + scheduleItem.urlPath,
+                            GLOBALS.baseUrl + scheduleItem.urlPath,
                             format(
                                 scheduleItem.datetime,
                                 'yyyy-mm-dd HH:mm',
