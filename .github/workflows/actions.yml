@@ -21,9 +21,6 @@ jobs:
         with:
           deno-version: v1.44
 
-      - name: Build step
-        run: "deno task build"
-
       - name: Build excecutable
         run: "deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn"
 
