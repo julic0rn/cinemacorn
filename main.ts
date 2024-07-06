@@ -1,8 +1,19 @@
-export function add(a: number, b: number): number {
-  return a + b;
+export const GLOBALS = {
+  markdownFilePath: 'schedule.md',
+  baseUrl: 'https://kinotickets.express',
+  subPaths: [
+    '/ingolstadt-cinema1',
+    '/ingolstadt-cinema2',
+    '/ingolstadt_donau-flimmern',
+  ],
+};
+
+export function main(): void {
+  console.log(GLOBALS);
+  
 }
 
 // Learn more at https://deno.land/manual/examples/module_metadata#concepts
 if (import.meta.main) {
-  console.log("Add 2 + 3 =", add(2, 3));
+  main();
 }
