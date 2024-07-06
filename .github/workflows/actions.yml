@@ -3,7 +3,7 @@ name: run deno script
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 7 * * *' # Everyday at 7:00 am UTC
+    - cron: '0 7 * * 4' # Every thursday at 7:00 am UTC
 
 jobs:
   build:
