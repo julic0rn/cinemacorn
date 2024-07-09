@@ -95,7 +95,7 @@ export default class CinemaParser {
 
                         const date = new Date(
                             year!,
-                            month!,
+                            month! - 1,
                             day,
                             hour,
                             minutes,
