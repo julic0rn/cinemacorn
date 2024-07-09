@@ -5,6 +5,8 @@ import { Movie } from '../models/movie.ts';
 import { ScheduleItem } from '../models/schedule_item.ts';
 
 export default class MarkdownBuilder {
+    private static readonly DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm';
+
     public static heading(level: 1 | 2 | 3 | 4 | 5 | 6, text: string): string {
         const levelPrefix: string = '#'.repeat(level);
         return `${levelPrefix} ${text}`;
@@ -23,7 +25,7 @@ export default class MarkdownBuilder {
     public static cinemasMarkdown(cinemas: Cinema[]): string {
         const currentDateString = format(
             new Date(),
-            'yyyy-mm-dd HH:mm',
+            this.DATE_TIME_FORMAT,
         );
         const header = this.heading(
             1,
@@ -49,7 +51,7 @@ export default class MarkdownBuilder {
                             GLOBALS.baseUrl + scheduleItem.urlPath,
                             format(
                                 scheduleItem.datetime,
-                                'yyyy-mm-dd HH:mm',
+                                this.DATE_TIME_FORMAT,
                             ),
                         )),
                 );
