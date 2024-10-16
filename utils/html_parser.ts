@@ -1,4 +1,4 @@
-import { DOMParser, HTMLDocument } from '../deps.ts';
+import { DOMParser, HTMLDocument } from 'jsr:@b-fuze/deno-dom';
 
 export class HtmlParser {
     static getDocument(pageContents: string): HTMLDocument {

@@ -1,4 +1,4 @@
-import { format } from '../deps.ts';
+import { format } from '@std/datetime';
 import { GLOBALS } from '../main.ts';
 import { Cinema } from '../models/cinema.ts';
 import { Movie } from '../models/movie.ts';

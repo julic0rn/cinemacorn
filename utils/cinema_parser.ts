@@ -1,4 +1,4 @@
-import { Element, HTMLDocument } from '../deps.ts';
+import { Element, HTMLDocument } from 'jsr:@b-fuze/deno-dom';
 import { Cinema } from '../models/cinema.ts';
 import { Movie } from '../models/movie.ts';
 import { ScheduleItem } from '../models/schedule_item.ts';
