@@ -22,16 +22,16 @@ jobs:
           deno-version: v1.44
 
       - name: Build excecutable
-        run: "deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn"
+        run: 'deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn'
 
-      - name: execute deno 
+      - name: execute deno
         run: ./cinemacorn
-    
+
       - name: get current time and day
         id: t1
         uses: Kaven-Universe/github-action-current-date-time@v1
         with:
-          format: "yyyy-MM-dd"
+          format: 'yyyy-MM-dd'
 
       - name: Release
         uses: softprops/action-gh-release@v2

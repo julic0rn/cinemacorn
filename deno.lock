@@ -4,8 +4,10 @@
     "jsr:@b-fuze/deno-dom@*": "0.1.48",
     "jsr:@b-fuze/deno-dom@~0.1.48": "0.1.48",
     "jsr:@std/assert@*": "0.226.0",
+    "jsr:@std/assert@^1.0.6": "1.0.6",
     "jsr:@std/datetime@~0.225.2": "0.225.2",
-    "jsr:@std/internal@1": "1.0.1"
+    "jsr:@std/internal@1": "1.0.1",
+    "jsr:@std/internal@^1.0.4": "1.0.4"
   },
   "jsr": {
     "@b-fuze/deno-dom@0.1.48": {
@@ -14,7 +16,13 @@
     "@std/assert@0.226.0": {
       "integrity": "0dfb5f7c7723c18cec118e080fec76ce15b4c31154b15ad2bd74822603ef75b3",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@1"
+      ]
+    },
+    "@std/assert@1.0.6": {
+      "integrity": "1904c05806a25d94fe791d6d883b685c9e2dcd60e4f9fc30f4fc5cf010c72207",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.4"
       ]
     },
     "@std/datetime@0.225.2": {
@@ -22,6 +30,9 @@
     },
     "@std/internal@1.0.1": {
       "integrity": "6f8c7544d06a11dd256c8d6ba54b11ed870aac6c5aeafff499892662c57673e6"
+    },
+    "@std/internal@1.0.4": {
+      "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
     }
   },
   "redirects": {
@@ -64,6 +75,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@b-fuze/deno-dom@~0.1.48",
+      "jsr:@std/assert@^1.0.6",
       "jsr:@std/datetime@~0.225.2"
     ]
   }

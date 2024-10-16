@@ -4,7 +4,8 @@
 
 I want to know when there are movies in OV in my hometown lol.
 
-Find the nicely formatted list [here](https://github.com/julic0rn/cinemacorn/releases)
+Find the nicely formatted list
+[here](https://github.com/julic0rn/cinemacorn/releases)
 
 ## Requirements
 

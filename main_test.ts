@@ -1,5 +1,5 @@
-import { assertEquals } from "jsr:@std/assert";
+import { assertEquals } from 'jsr:@std/assert';
 
 Deno.test(function addTest() {
-  assertEquals(1, 1);
+	assertEquals(1, 1);
 });

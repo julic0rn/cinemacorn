@@ -6,37 +6,37 @@ import MarkdownBuilder from './utils/markdown_builder.ts';
 import WebLoader from './utils/web_loader.ts';
 
 export const GLOBALS = {
-  projectName: 'CinemaCorn',
-  markdownFilePath: 'schedule.md',
-  baseUrl: 'https://kinotickets.express',
-  subPaths: [
-    '/ingolstadt-cinema1',
-    '/ingolstadt-cinema2',
-  ],
+	projectName: 'CinemaCorn',
+	markdownFilePath: 'schedule.md',
+	baseUrl: 'https://kinotickets.express',
+	subPaths: [
+		'/ingolstadt-cinema1',
+		'/ingolstadt-cinema2',
+	],
 };
 
 export function main(): void {
-  const cinemaPromises = GLOBALS.subPaths.map(
-    async (subPath: string) => {
-      const url = GLOBALS.baseUrl + subPath;
-      console.log('Parsing: ', url);
-      const rawDocument = await WebLoader.load(url);
-      const document = HtmlParser.getDocument(rawDocument);
-      return CinemaParser.parseCinema(document, url);
-    },
-  );
+	const cinemaPromises = GLOBALS.subPaths.map(
+		async (subPath: string) => {
+			const url = GLOBALS.baseUrl + subPath;
+			console.log('Parsing: ', url);
+			const rawDocument = await WebLoader.load(url);
+			const document = HtmlParser.getDocument(rawDocument);
+			return CinemaParser.parseCinema(document, url);
+		},
+	);
 
-  Promise.all(cinemaPromises).then(
-    (cinemas: Cinema[]) => {
-      console.log('---------------');
-      const markdown: string = MarkdownBuilder.cinemasMarkdown(cinemas);
-      console.log(markdown);
-      FileWriter.writeToFile(GLOBALS.markdownFilePath, markdown);
-    },
-  );
+	Promise.all(cinemaPromises).then(
+		(cinemas: Cinema[]) => {
+			console.log('---------------');
+			const markdown: string = MarkdownBuilder.cinemasMarkdown(cinemas);
+			console.log(markdown);
+			FileWriter.writeToFile(GLOBALS.markdownFilePath, markdown);
+		},
+	);
 }
 
 // Learn more at https://deno.land/manual/examples/module_metadata#concepts
 if (import.meta.main) {
-  main();
+	main();
 }
