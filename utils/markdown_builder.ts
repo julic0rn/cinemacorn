@@ -6,6 +6,15 @@ import { ScheduleItem } from '../models/schedule_item.ts';
 
 export default class MarkdownBuilder {
 	private static readonly DATE_TIME_FORMAT = 'yyyy-MM-dd HH:mm';
+	private static readonly DAYS = [
+		'Sunday',
+		'Monday',
+		'Tuesday',
+		'Wednesday',
+		'Thursday',
+		'Friday',
+		'Saturday',
+	];
 
 	public static heading(level: 1 | 2 | 3 | 4 | 5 | 6, text: string): string {
 		const levelPrefix: string = '#'.repeat(level);
@@ -51,7 +60,9 @@ export default class MarkdownBuilder {
 							GLOBALS.baseUrl + scheduleItem.urlPath,
 							format(
 								scheduleItem.datetime,
-								this.DATE_TIME_FORMAT,
+								`'${
+									this.DAYS[scheduleItem.datetime.getDay()]
+								}:' ${this.DATE_TIME_FORMAT}`,
 							),
 						)),
 				);
