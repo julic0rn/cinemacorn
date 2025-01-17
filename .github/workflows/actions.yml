@@ -28,14 +28,13 @@ jobs:
       - name: execute deno
         run: ./cinemacorn
 
-      - name: get current time and day
-        id: t1
-        uses: Kaven-Universe/github-action-current-date-time@v1
-        with:
-          format: "yyyy-MM-dd"
+      - name: Get current date in yyyy-MM-dd format
+        id: date
+        run: |
+          echo "date={$(date +'%Y-%m-%d')}" >> "$GITHUB_ENV"
 
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.t1.outputs.year }}-${{ steps.t1.outputs.month }}-${{ steps.t1.outputs.day }}
+          tag_name: ${{ env.date }}
           body_path: schedule.md
