@@ -18,8 +18,9 @@ jobs:
 
       - name: Install Deno
         uses: denoland/setup-deno@v2
+        # Latest stable for a major
         with:
-          deno-version: v2.0.0
+          deno-version: v2.x
 
       - name: Build excecutable
         run: "deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn"
