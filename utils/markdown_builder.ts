@@ -25,6 +25,10 @@ export default class MarkdownBuilder {
 		return `[${text}](${href})`;
 	}
 
+	public static img(href: string, altText: string): string {
+		return `![${altText}](${href})`;
+	}
+
 	public static paragraph(text: string): string {
 		return `
         ${text}
@@ -54,6 +58,10 @@ export default class MarkdownBuilder {
 		const movieSchedule: string[] = cinema.movies.map(
 			(movie: Movie) => {
 				const movieHeader = this.heading(3, movie.title);
+				const moviePoster = this.img(
+					GLOBALS.baseUrl + movie.posterUrl,
+					GLOBALS.baseUrl + movie.posterUrl,
+				);
 				const schedule = movie.schedule.map(
 					(scheduleItem: ScheduleItem) =>
 						'\n'.concat(this.link(
@@ -67,7 +75,13 @@ export default class MarkdownBuilder {
 						)),
 				);
 
-				return movieHeader.concat('\n', ...schedule, '\n', '\n');
+				return movieHeader.concat(
+					'\n',
+					'\n',
+					moviePoster,
+					'\n',
+					...schedule,
+				);
 			},
 		);
 

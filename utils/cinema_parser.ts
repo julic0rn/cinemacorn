@@ -41,6 +41,14 @@ export default class CinemaParser {
 		return this.returnTextOrError(titleElement, 'titleElement');
 	}
 
+	private static extractMoviePosterUrl(element: Element): string {
+		const titleElement = element.getElementsByTagName('img')[0];
+		if (titleElement) {
+			return titleElement.getAttribute('src') ?? '';
+		}
+		return '';
+	}
+
 	public static parseCinema(document: HTMLDocument, url: string): Cinema {
 		const cinemaName = this.getCinemaName(document);
 		const movies = this.parseMovies(document);
@@ -60,6 +68,7 @@ export default class CinemaParser {
 		const movieList = this.getMovieList(document);
 		return movieList.map((movieListElement: Element) => {
 			const movieTitle = this.extractMovieTitle(movieListElement);
+			const moviePosterUrl = this.extractMoviePosterUrl(movieListElement);
 			const schedule = this.parseSchedule(
 				this.getSchedule(movieListElement),
 			);
@@ -67,6 +76,7 @@ export default class CinemaParser {
 			return {
 				title: movieTitle,
 				schedule: schedule,
+				posterUrl: moviePosterUrl,
 			} as Movie;
 		}).filter(
 			(movie: Movie) => this.isOv(movie.title),
