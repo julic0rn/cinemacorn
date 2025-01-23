@@ -81,6 +81,8 @@ export default class MarkdownBuilder {
 					moviePoster,
 					'\n',
 					...schedule,
+					'\n',
+					'\n',
 				);
 			},
 		);
