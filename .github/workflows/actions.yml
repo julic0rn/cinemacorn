@@ -3,7 +3,7 @@ name: run deno script
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 7 * * 4" # Every thursday at 7:00 am UTC
+    - cron: '0 7 * * 4' # Every thursday at 7:00 am UTC
 
 jobs:
   build:
@@ -22,8 +22,11 @@ jobs:
         with:
           deno-version: v2.x
 
+      - name: Run tests
+        run: deno test --allow-net=kinotickets.express
+
       - name: Build excecutable
-        run: "deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn"
+        run: 'deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn'
 
       - name: execute deno
         run: ./cinemacorn
