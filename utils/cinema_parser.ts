@@ -12,13 +12,9 @@ export default class CinemaParser {
 	}
 
 	private static getMovieList(document: HTMLDocument): Element[] {
-		const moviePoster = document.querySelector(
-			'body > main > div > div > div > ul > li:nth-child(1) > div.sm\\:p-4.sm\\:order-first.sm\\:row-span-4 > img',
-		);
-		const movieListElement = moviePoster?.parentElement?.parentElement
-			?.parentElement;
-
-		const movieListCollection = movieListElement?.children;
+		const movieListCollection = document.querySelector(
+			'body > main > div > div > div > ul',
+		)?.children;
 		const movieList: Element[] = [];
 		if (!movieListCollection) {
 			return [];
@@ -37,7 +33,7 @@ export default class CinemaParser {
 	}
 
 	private static extractMovieTitle(element: Element): string {
-		const titleElement = element.getElementsByTagName('div')[0];
+		const titleElement = element.querySelector('div > div');
 		return this.returnTextOrError(titleElement, 'titleElement');
 	}
 
