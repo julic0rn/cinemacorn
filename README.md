@@ -14,11 +14,11 @@ Find the nicely formatted list
 ### Run project
 
 ```sh
-deno run --allow-read --allow-write --allow-net main.ts
+deno run --allow-read --allow-write --allow-net=kinotickets.express main.ts
 ```
 
 ### Build executable binary
 
 ```sh
-deno compile --allow-read --allow-write --allow-net main.ts --output cinemacorn
+deno compile --allow-read --allow-write --allow-net=kinotickets.express main.ts --output cinemacorn
 ```
