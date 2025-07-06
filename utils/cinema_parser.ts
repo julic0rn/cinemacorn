@@ -17,6 +17,7 @@ export default class CinemaParser {
 		)?.children;
 		const movieList: Element[] = [];
 		if (!movieListCollection) {
+			console.error('Movie list is empty, check if HTML has changed');
 			return [];
 		}
 		for (let index = 0; index < movieListCollection.length; index++) {
